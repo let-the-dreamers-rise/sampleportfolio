@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ashwin Goyal — Portfolio</title>
+  <!-- Internal CSS -->
+  <style>
+    :root {
+      --bg: #0f172a;          /* slate-900 */
+      --bg-soft: #111827;     /* gray-900 */
+      --card: #111827;
+      --text: #e5e7eb;        /* gray-200 */
+      --muted: #9ca3af;       /* gray-400 */
+      --accent: #60a5fa;      /* blue-400 */
+      --accent-2: #34d399;    /* emerald-400 */
+      --link: #93c5fd;        /* blue-300 */
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: linear-gradient(180deg, var(--bg) 0%, #0b1024 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(17,24,39,0.8);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(148,163,184,0.15);
+    }
+    .nav {
+      max-width: 1100px; margin: 0 auto; padding: 12px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav h1 { margin: 0; font-size: 1.2rem; letter-spacing: 0.5px; }
+    .nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 18px; }
+    .nav a { font-weight: 600; }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+
+    .hero { display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px; align-items: center; padding-top: 28px; }
+    .hero-card { background: var(--card); border: 1px solid rgba(148,163,184,0.15); border-radius: 18px; padding: 24px; }
+    .hero h2 { font-size: 2rem; margin: 0 0 10px; }
+    .badge { display: inline-block; padding: 4px 10px; border: 1px solid rgba(148,163,184,0.2); border-radius: 999px; color: var(--muted); font-size: 0.85rem; }
+    .portrait { width: 100%; max-width: 280px; border-radius: 16px; border: 1px solid rgba(148,163,184,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
+
+    section { padding: 40px 0; }
+    section h3 { font-size: 1.6rem; margin: 0 0 12px; }
+    .muted { color: var(--muted); }
+
+    .grid { display: grid; gap: 16px; }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .card { background: var(--card); border: 1px solid rgba(148,163,184,0.15); border-radius: 16px; padding: 18px; }
+
+    img.gallery {
+      width: 100%; height: 180px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(148,163,184,0.2);
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid rgba(148,163,184,0.15); text-align: left; }
+    th { color: var(--muted); font-weight: 600; }
+
+    .progress-row { display: grid; grid-template-columns: 160px 1fr; gap: 10px; align-items: center; }
+    progress { width: 100%; height: 18px; accent-color: var(--accent-2); }
+
+    form { display: grid; gap: 12px; }
+    input, textarea, button {
+      width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(148,163,184,0.25); background: #0b1024; color: var(--text);
+    }
+    textarea { min-height: 110px; resize: vertical; }
+    button { cursor: pointer; font-weight: 700; background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%); color: #0b1024; border: none; }
+    button:hover { filter: brightness(1.1); }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+    footer { border-top: 1px solid rgba(148,163,184,0.15); padding: 24px 0 48px; background: rgba(17,24,39,0.6); }
+    .footer-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+
+    .caps { text-transform: uppercase; letter-spacing: 1px; font-size: 0.75rem; color: var(--muted); }
+
+    /* Small screens */
+    @media (max-width: 800px) {
+      .hero { grid-template-columns: 1fr; }
+      .grid-3 { grid-template-columns: 1fr; }
+      .two-col { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header / Internal navigation (anchors jump within the page) -->
+  <header id="top">
+    <nav class="nav" aria-label="Primary">
+      <h1><span class="caps">Portfolio</span> — <u>Ashwin Goyal</u></h1>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#fun">Hobbies</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- Hero / Header section -->
+    <section class="hero" aria-labelledby="intro-heading">
+      <div class="hero-card">
+        <span class="badge">Always learning & innovating</span>
+        <h2 id="intro-heading">Hi, I'm <b>Ashwin</b> — a <i>frontend</i> developer & <b><i> coding</i></b> enthusiast.</h2>
+        <p>
+          I write code in <strong>C</strong>, <strong>C++</strong>, and <strong>Java</strong>, and I enjoy building
+          clean, accessible web interfaces. I'm <em>curious</em>, <u>persistent</u>, and always eager to experiment with new ideas.
+        </p>
+        <p>
+          Connect with me on
+          <a href="https://www.linkedin.com/in/ashwin-goyal-8940a8327/" target="_blank" rel="noopener">LinkedIn</a>.
+        </p>
+        <p class="muted">Tip: Use the navigation above to <u>jump</u> to different sections of this page.</p>
+      </div>
+      <div style="text-align:center">
+        <img class="portrait" src="image23.png" alt="Abstract developer portrait placeholder" />
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" aria-labelledby="about-heading">
+      <h3 id="about-heading">About</h3>
+      <div class="two-col">
+        <div class="card">
+          <p>
+            I'm building my foundation in frontend development (HTML, CSS, JavaScript) while solving <b>string problems</b> and
+            data-structure challenges in <strong>C/C++/Java</strong>. My goal is to ship small, polished projects that teach me something new.
+          </p>
+          <p>
+            <i>Philosophy:</i> keep it simple, make it readable, and iterate quickly. I focus on semantics, accessibility, and performance.
+          </p>
+        </div>
+        <div class="card">
+          <canvas id="demoCanvas" width="480" height="200" aria-label="Demo canvas drawing" style="width:100%; border-radius: 12px; border:1px solid rgba(148,163,184,0.2);"></canvas>
+          <p class="muted" style="margin-top:8px">Canvas: rectangle + circle drawn with JavaScript.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills: table + progress bars -->
+    <section id="skills" aria-labelledby="skills-heading">
+      <h3 id="skills-heading">Skills</h3>
+      <div class="two-col">
+        <div class="card">
+          <h4>Languages & Focus</h4>
+          <table aria-label="Skills table">
+            <thead>
+              <tr><th>Skill</th><th>Proficiency</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>HTML5 & CSS3</td><td>Intermediate</td><td>Semantic, responsive, accessible</td></tr>
+              <tr><td>JavaScript (DOM)</td><td>Intermediate</td><td>Components, events, canvas</td></tr>
+              <tr><td>C</td><td>Good</td><td>String handling, pointers</td></tr>
+              <tr><td>C++</td><td>Good</td><td>STL, algorithms</td></tr>
+              <tr><td>Java</td><td>Good</td><td>OOP fundamentals</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h4>Progress</h4>
+          <div class="progress-row"><span>HTML/CSS</span><progress max="100" value="70">70%</progress></div>
+          <div class="progress-row"><span>JavaScript</span><progress max="100" value="80">80%</progress></div>
+          <div class="progress-row"><span>C / C++</span><progress max="100" value="75">75%</progress></div>
+          <div class="progress-row"><span>Java</span><progress max="100" value="65">65%</progress></div>
+          <div class="progress-row"><span>Algorithms </span><progress max="100" value="72">72%</progress></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery with images -->
+    <section id="gallery" aria-labelledby="gallery-heading">
+      <h3 id="gallery-heading">Gallery</h3>
+      <p class="muted">A few snapshots from recent experiments .</p>
+
+      <!-- Snapshots from user-provided images -->
+      <h4 style="margin-top:18px">Snapshots</h4>
+      <div class="grid grid-3">
+        <figure class="card" style="padding:10px">
+          <img class="gallery" src="rectify.png" alt="Homepage hero screenshot showing 'AI-powered solutions' headline" />
+          <figcaption class="muted" style="margin-top:6px">Homepage hero </figcaption>
+        </figure>
+        <figure class="card" style="padding:10px">
+          <img class="gallery" src="vss.png" alt="VS Code window showing Java decompiled class and project explorer" />
+          <figcaption class="muted" style="margin-top:6px">VS Code — Java class view </figcaption>
+        </figure>
+        <figure class="card" style="padding:10px">
+          <img class="gallery" src="blog.png" alt="Blog list cards with 'Smart steps for quick solutions'" />
+          <figcaption class="muted" style="margin-top:6px">Blog cards section </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Hobbies + Strengths lists -->
+    <section id="fun" aria-labelledby="fun-heading">
+      <h3 id="fun-heading">Hobbies & Strengths</h3>
+      <div class="two-col">
+        <div class="card">
+          <h4>Hobbies (unordered list)</h4>
+          <ul>
+            <li>Coding string algorithms for fun</li>
+            <li>Designing small UI components</li>
+            <li>Reading tech blogs & RFCs</li>
+            <li>Listening to chill background music while coding</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Strengths (ordered list)</h4>
+          <ol>
+            <li>Curiosity and willingness to <u>learn</u></li>
+            <li>Consistency and <b>discipline</b></li>
+            <li>Clear communication & <i>documentation</i></li>
+            <li>Problem solving with a calm, iterative approach</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- Media embed: audio or video -->
+    <section aria-labelledby="media-heading">
+      <h3 id="media-heading">Intro Audio</h3>
+      <div class="card">
+        <p class="muted">A short background track I like to code with (sample).</p>
+        <audio controls preload="metadata">
+          <source src="please-calm-my-mind-125566.mp3" type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+    </section>
+
+    <!-- Contact form -->
+    <section id="contact" aria-labelledby="contact-heading">
+      <h3 id="contact-heading">Contact</h3>
+      <div class="card">
+        <form action="#" method="post" onsubmit="event.preventDefault(); alert('Thanks, your message has been recorded (demo)!');">
+          <div class="two-col">
+            <div>
+              <label for="name" class="caps">Name</label>
+              <input id="name" name="name" type="text" placeholder="Your full name" required />
+            </div>
+            <div>
+              <label for="email" class="caps">Email</label>
+              <input id="email" name="email" type="email" placeholder="you@example.com" required />
+            </div>
+          </div>
+          <div>
+            <label for="message" class="caps">Message</label>
+            <textarea id="message" name="message" placeholder="Say hello..." required></textarea>
+          </div>
+          <button type="submit">Send Message</button>
+        </form>
+      </div>
+    </section>
+
+    <p style="text-align:right; margin-top: 12px;"><a href="#">Back to top ↑</a></p>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <small>© <span id="year"></span> <b>Ashwin Goyal</b>. All rights reserved.</small>
+      <a href="https://www.linkedin.com/in/ashwin-goyal-8940a8327/" target="_blank" rel="noopener">LinkedIn ↗</a>
+    </div>
+  </footer>
+
+  <!-- JavaScript: draw on canvas -->
+  <script>
+    const c = document.getElementById('demoCanvas');
+    const ctx = c.getContext('2d');
+
+    // Background
+    const g = ctx.createLinearGradient(0, 0, c.width, c.height);
+    g.addColorStop(0, '#0ea5e9');
+    g.addColorStop(1, '#22c55e');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, c.width, c.height);
+
+    // Rectangle card
+    ctx.fillStyle = 'rgba(255,255,255,0.15)';
+    ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+    ctx.lineWidth = 3;
+    const rx = 24, ry = 30, rw = c.width - 48, rh = 110, r = 16;
+    ctx.beginPath();
+    ctx.moveTo(rx + r, ry);
+    ctx.lineTo(rx + rw - r, ry);
+    ctx.quadraticCurveTo(rx + rw, ry, rx + rw, ry + r);
+    ctx.lineTo(rx + rw, ry + rh - r);
+    ctx.quadraticCurveTo(rx + rw, ry + rh, rx + rw - r, ry + rh);
+    ctx.lineTo(rx + r, ry + rh);
+    ctx.quadraticCurveTo(rx, ry + rh, rx, ry + rh - r);
+    ctx.lineTo(rx, ry + r);
+    ctx.quadraticCurveTo(rx, ry, rx + r, ry);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Circle
+    ctx.beginPath();
+    ctx.arc(c.width - 80, c.height - 60, 34, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.fill();
+
+    // Text
+    ctx.fillStyle = '#0b1024';
+    ctx.font = '700 20px system-ui, -apple-system, Segoe UI, Roboto';
+    ctx.fillText('Hello from Canvas!', 40, 86);
+
+    // Year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
