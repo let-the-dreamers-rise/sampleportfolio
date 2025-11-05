@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ashwin Goyal — Portfolio</title>
-  <!-- Internal CSS -->
   <style>
     :root {
       --bg: #0f172a;          /* slate-900 */
@@ -85,7 +84,6 @@
 
     .caps { text-transform: uppercase; letter-spacing: 1px; font-size: 0.75rem; color: var(--muted); }
 
-    /* Small screens */
     @media (max-width: 800px) {
       .hero { grid-template-columns: 1fr; }
       .grid-3 { grid-template-columns: 1fr; }
@@ -94,7 +92,6 @@
   </style>
 </head>
 <body>
-  <!-- Header / Internal navigation (anchors jump within the page) -->
   <header id="top">
     <nav class="nav" aria-label="Primary">
       <h1><span class="caps">Portfolio</span> — <u>Ashwin Goyal</u></h1>
@@ -109,7 +106,6 @@
   </header>
 
   <main class="container">
-    <!-- Hero / Header section -->
     <section class="hero" aria-labelledby="intro-heading">
       <div class="hero-card">
         <span class="badge">Always learning & innovating</span>
@@ -129,7 +125,6 @@
       </div>
     </section>
 
-    <!-- About -->
     <section id="about" aria-labelledby="about-heading">
       <h3 id="about-heading">About</h3>
       <div class="two-col">
@@ -149,7 +144,6 @@
       </div>
     </section>
 
-    <!-- Skills: table + progress bars -->
     <section id="skills" aria-labelledby="skills-heading">
       <h3 id="skills-heading">Skills</h3>
       <div class="two-col">
@@ -179,12 +173,10 @@
       </div>
     </section>
 
-    <!-- Gallery with images -->
     <section id="gallery" aria-labelledby="gallery-heading">
       <h3 id="gallery-heading">Gallery</h3>
       <p class="muted">A few snapshots from recent experiments .</p>
 
-      <!-- Snapshots from user-provided images -->
       <h4 style="margin-top:18px">Snapshots</h4>
       <div class="grid grid-3">
         <figure class="card" style="padding:10px">
@@ -202,7 +194,6 @@
       </div>
     </section>
 
-    <!-- Hobbies + Strengths lists -->
     <section id="fun" aria-labelledby="fun-heading">
       <h3 id="fun-heading">Hobbies & Strengths</h3>
       <div class="two-col">
@@ -227,11 +218,10 @@
       </div>
     </section>
 
-    <!-- Media embed: audio or video -->
     <section aria-labelledby="media-heading">
       <h3 id="media-heading">Intro Audio</h3>
       <div class="card">
-        <p class="muted">A short background track I like to code with (sample).</p>
+        <p class="muted">A short background track I like to code with .</p>
         <audio controls preload="metadata">
           <source src="please-calm-my-mind-125566.mp3" type="audio/mpeg" />
           Your browser does not support the audio element.
@@ -239,7 +229,6 @@
       </div>
     </section>
 
-    <!-- Contact form -->
     <section id="contact" aria-labelledby="contact-heading">
       <h3 id="contact-heading">Contact</h3>
       <div class="card">
@@ -273,19 +262,16 @@
     </div>
   </footer>
 
-  <!-- JavaScript: draw on canvas -->
   <script>
     const c = document.getElementById('demoCanvas');
     const ctx = c.getContext('2d');
 
-    // Background
     const g = ctx.createLinearGradient(0, 0, c.width, c.height);
     g.addColorStop(0, '#0ea5e9');
     g.addColorStop(1, '#22c55e');
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, c.width, c.height);
 
-    // Rectangle card
     ctx.fillStyle = 'rgba(255,255,255,0.15)';
     ctx.strokeStyle = 'rgba(255,255,255,0.6)';
     ctx.lineWidth = 3;
@@ -304,18 +290,15 @@
     ctx.fill();
     ctx.stroke();
 
-    // Circle
     ctx.beginPath();
     ctx.arc(c.width - 80, c.height - 60, 34, 0, Math.PI * 2);
     ctx.fillStyle = 'rgba(255,255,255,0.85)';
     ctx.fill();
 
-    // Text
     ctx.fillStyle = '#0b1024';
     ctx.font = '700 20px system-ui, -apple-system, Segoe UI, Roboto';
     ctx.fillText('Hello from Canvas!', 40, 86);
 
-    // Year in footer
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
