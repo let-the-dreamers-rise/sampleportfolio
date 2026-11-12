@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TapRail Crypto Payments</title>
+  <meta name="description" content="Prototype: one-tap setup to accept card payments in USD or INR, settled to you in crypto." />
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --surface: #ffffff;
+      --surface-2: #eef1f6;
+      --text: #0f172a;
+      --muted: #5b6475;
+      --border: #dde2ea;
+      --accent: #4f46e5;
+      --accent-ink: #ffffff;
+      --good: #0f9d6b;
+      --warn: #b45309;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0b1020;
+        --surface: #121a2e;
+        --surface-2: #1a2440;
+        --text: #e7eaf2;
+        --muted: #9aa4b8;
+        --border: #263252;
+        --accent: #818cf8;
+        --accent-ink: #0b1020;
+        --good: #34d399;
+        --warn: #fbbf24;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #0b1020;
+      --surface: #121a2e;
+      --surface-2: #1a2440;
+      --text: #e7eaf2;
+      --muted: #9aa4b8;
+      --border: #263252;
+      --accent: #818cf8;
+      --accent-ink: #0b1020;
+      --good: #34d399;
+      --warn: #fbbf24;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Helvetica, Arial, sans-serif;
+      line-height: 1.55;
+    }
+    a { color: var(--accent); }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+
+    header { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+    .nav { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 12px; }
+    .logo { font-weight: 800; letter-spacing: -0.02em; font-size: 1.15rem; display: flex; align-items: center; gap: 8px; }
+    .logo span.dot { width: 22px; height: 22px; border-radius: 7px; background: var(--accent); display: inline-block; }
+    .nav nav { display: flex; gap: 18px; font-size: 0.95rem; }
+    .nav nav a { color: var(--muted); text-decoration: none; }
+    .nav nav a:hover { color: var(--text); }
+    @media (max-width: 640px) { .nav nav a.hide-sm { display: none; } }
+
+    .btn { appearance: none; border: 1px solid transparent; background: var(--accent); color: var(--accent-ink); font: inherit; font-weight: 650; padding: 10px 16px; border-radius: 10px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+    .btn:hover { filter: brightness(1.05); }
+    .btn.ghost { background: transparent; color: var(--text); border-color: var(--border); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .hero { padding: 64px 0 40px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; }
+    @media (max-width: 860px) { .hero { grid-template-columns: 1fr; padding-top: 40px; } }
+    .pill { display: inline-block; font-size: 0.8rem; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; margin-bottom: 14px; }
+    h1 { font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1.1; letter-spacing: -0.03em; margin: 0 0 16px; }
+    .lead { font-size: 1.12rem; color: var(--muted); margin: 0 0 24px; max-width: 34em; }
+    .cta { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .flow { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 20px; box-shadow: var(--shadow); }
+    .flow-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; }
+    .flow-row + .flow-row { border-top: 1px dashed var(--border); }
+    .flow-ico { width: 40px; height: 40px; flex: none; border-radius: 12px; background: var(--surface-2); display: grid; place-items: center; font-size: 1.2rem; }
+    .flow-row b { display: block; }
+    .flow-row small { color: var(--muted); }
+
+    section { padding: 48px 0; }
+    h2 { font-size: 1.7rem; letter-spacing: -0.02em; margin: 0 0 8px; }
+    .sub { color: var(--muted); margin: 0 0 28px; }
+
+    .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    @media (max-width: 760px) { .grid3 { grid-template-columns: 1fr; } }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+    .card h3 { margin: 6px 0 6px; font-size: 1.08rem; }
+    .card p { margin: 0; color: var(--muted); }
+    .num { font-size: 0.8rem; font-weight: 700; color: var(--accent); }
+
+    /* demo */
+    .demo { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 860px) { .demo { grid-template-columns: 1fr; } }
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 20px; box-shadow: var(--shadow); min-width: 0; }
+    .panel h3 { margin: 0 0 4px; font-size: 1.1rem; }
+    .panel .tag { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+    label { display: block; font-size: 0.85rem; color: var(--muted); margin: 14px 0 6px; }
+    input, select { width: 100%; font: inherit; color: var(--text); background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .seg { display: flex; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 3px; gap: 3px; }
+    .seg button { flex: 1; border: 0; background: transparent; color: var(--muted); font: inherit; font-weight: 600; padding: 7px; border-radius: 8px; cursor: pointer; }
+    .seg button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+
+    .status { margin-top: 16px; padding: 12px; border-radius: 12px; background: var(--surface-2); font-size: 0.92rem; }
+    .status .ok { color: var(--good); font-weight: 700; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.85rem; word-break: break-all; }
+    .steps { list-style: none; padding: 0; margin: 10px 0 0; }
+    .steps li { padding: 4px 0; color: var(--muted); }
+    .steps li.done { color: var(--text); }
+    .steps li.done::before { content: "✓ "; color: var(--good); font-weight: 700; }
+    .steps li:not(.done)::before { content: "○ "; }
+
+    .terminal { margin-top: 16px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--border); padding: 18px; text-align: center; }
+    .amount-big { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; }
+    .tap { width: 92px; height: 92px; border-radius: 50%; margin: 14px auto 6px; display: grid; place-items: center; font-size: 2rem; background: var(--surface); border: 2px solid var(--accent); cursor: pointer; transition: transform 0.15s; }
+    .tap:hover { transform: scale(1.04); }
+    .tap.busy { animation: pulse 0.9s infinite; }
+    .tap.paid { border-color: var(--good); }
+    @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 50%, transparent); } 50% { box-shadow: 0 0 0 14px transparent; } }
+    @media (prefers-reduced-motion: reduce) { .tap.busy { animation: none; } }
+
+    table.q { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 0.92rem; }
+    table.q td { padding: 6px 0; border-bottom: 1px solid var(--border); }
+    table.q td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+    table.q tr.total td { font-weight: 800; border-bottom: 0; padding-top: 10px; }
+    .note { font-size: 0.8rem; color: var(--muted); margin-top: 10px; }
+
+    .price { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    @media (max-width: 760px) { .price { grid-template-columns: 1fr; } }
+    .price .card .big { font-size: 1.8rem; font-weight: 800; margin: 6px 0; color: var(--text); }
+    .price .card.feat { border-color: var(--accent); }
+
+    details { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+    summary { cursor: pointer; font-weight: 650; }
+    details p { color: var(--muted); margin: 10px 0 0; }
+
+    footer { border-top: 1px solid var(--border); padding: 28px 0 40px; color: var(--muted); font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <div class="logo"><span class="dot"></span>TapRail</div>
+      <nav>
+        <a href="#how" class="hide-sm">How it works</a>
+        <a href="#demo">Demo</a>
+        <a href="#pricing" class="hide-sm">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="hero">
+      <div>
+        <span class="pill">Prototype · working name</span>
+        <h1>Customers tap a card. You get paid in crypto.</h1>
+        <p class="lead">Set up once, in one tap. Your customers pay by card in USD or INR like they always do. We convert the money to crypto and send it to your wallet within seconds.</p>
+        <div class="cta">
+          <a class="btn" href="#demo">Try the demo</a>
+          <a class="btn ghost" href="#how">How it works</a>
+        </div>
+      </div>
+      <div class="flow" aria-label="Payment flow">
+        <div class="flow-row"><div class="flow-ico">💳</div><div><b>Customer taps a card</b><small>₹4,999 or $59, in their own currency</small></div></div>
+        <div class="flow-row"><div class="flow-ico">⇄</div><div><b>We convert it on the spot</b><small>Fiat → USDC / USDT / BTC at a locked quote</small></div></div>
+        <div class="flow-row"><div class="flow-ico">👛</div><div><b>Money lands in your wallet</b><small>Seconds, not days. Or cash out to your bank.</small></div></div>
+      </div>
+    </div>
+
+    <section id="how">
+      <h2>How it works</h2>
+      <p class="sub">There's no crypto for your customers to learn. You keep the card checkout they already trust.</p>
+      <div class="grid3">
+        <div class="card"><div class="num">01</div><h3>One-tap setup</h3><p>Sign in, verify your business, and pick a payout coin and network. We create a wallet for you, or you can connect your own.</p></div>
+        <div class="card"><div class="num">02</div><h3>Accept cards anywhere</h3><p>Use tap-to-pay on your phone, a payment link, a QR code, or an API checkout. Visa, Mastercard, RuPay and UPI.</p></div>
+        <div class="card"><div class="num">03</div><h3>Get paid in crypto, fast</h3><p>Each payment is converted at a quote locked for 30 seconds and sent to your wallet. You can also choose automatic cash-out to your bank.</p></div>
+      </div>
+    </section>
+
+    <section id="demo">
+      <h2>Interactive demo</h2>
+      <p class="sub">Set up a merchant on the left, then take a card payment on the right. All rates and fees are made up for illustration.</p>
+      <div class="demo">
+        <!-- Merchant setup -->
+        <div class="panel">
+          <div class="tag">Merchant</div>
+          <h3>One-tap setup</h3>
+          <label for="biz">Business name</label>
+          <input id="biz" value="Chai &amp; Co." />
+          <div class="row2">
+            <div>
+              <label for="coin">Get paid in</label>
+              <select id="coin">
+                <option value="USDC">USDC (stablecoin)</option>
+                <option value="USDT">USDT (stablecoin)</option>
+                <option value="BTC">Bitcoin</option>
+                <option value="ETH">Ether</option>
+              </select>
+            </div>
+            <div>
+              <label for="net">Network</label>
+              <select id="net"></select>
+            </div>
+          </div>
+          <label>Payout</label>
+          <div class="seg" id="payout">
+            <button type="button" aria-pressed="true" data-v="wallet">Keep in crypto</button>
+            <button type="button" aria-pressed="false" data-v="bank">Auto cash-out</button>
+          </div>
+          <div style="margin-top:16px"><button class="btn" id="activate">⚡ Activate in one tap</button></div>
+          <div class="status" id="setupStatus">
+            <ul class="steps" id="steps">
+              <li>Business verified (KYB)</li>
+              <li>Wallet created</li>
+              <li>Card acceptance enabled</li>
+              <li>Payment link ready</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Checkout -->
+        <div class="panel">
+          <div class="tag">Customer</div>
+          <h3>Tap to pay</h3>
+          <div class="row2">
+            <div>
+              <label for="amt">Amount</label>
+              <input id="amt" type="number" min="1" step="any" value="4999" inputmode="decimal" />
+            </div>
+            <div>
+              <label>Currency</label>
+              <div class="seg" id="ccy">
+                <button type="button" aria-pressed="true" data-v="INR">INR ₹</button>
+                <button type="button" aria-pressed="false" data-v="USD">USD $</button>
+              </div>
+            </div>
+          </div>
+          <div class="terminal">
+            <div class="muted" id="payee" style="color:var(--muted);font-size:0.9rem">Activate the merchant first</div>
+            <div class="amount-big" id="bigAmt">₹4,999</div>
+            <button class="tap" id="tap" aria-label="Tap card to pay" disabled>💳</button>
+            <div id="tapMsg" style="font-size:0.9rem;color:var(--muted)">Waiting for setup…</div>
+          </div>
+          <table class="q" aria-label="Quote breakdown">
+            <tbody id="quote"></tbody>
+          </table>
+          <div class="note">Demo rates only: 1 USD = ₹88, 1 BTC = $100,000, 1 ETH = $3,500. Not real market data.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing">
+      <h2>Simple pricing</h2>
+      <p class="sub">One fee per payment, covering card processing and conversion. Draft numbers that still need validating.</p>
+      <div class="price">
+        <div class="card"><h3>Starter</h3><div class="big">1.9%</div><p>No monthly fee. Payment links, QR codes, and tap-to-pay on your phone.</p></div>
+        <div class="card feat"><h3>Growth</h3><div class="big">1.5%</div><p>Above $10k a month. API checkout, auto cash-out, and multiple wallets.</p></div>
+        <div class="card"><h3>Scale</h3><div class="big">Custom</div><p>High volume, treasury tools, a dedicated account manager, and custom networks.</p></div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <h2>FAQ</h2>
+      <details><summary>Do my customers need crypto?</summary><p>No. They pay by card or UPI in their local currency. Only you, the merchant, receive crypto.</p></details>
+      <details><summary>What about price swings?</summary><p>By default you're paid in stablecoins (USDC/USDT) pegged to the US dollar. If you pick BTC or ETH, the quote is locked at payment time and later price moves are yours.</p></details>
+      <details><summary>Is this legal in India and the US?</summary><p>It can be, if it's licensed. In India, crypto service providers must register with FIU-IND and follow anti-money-laundering rules, and crypto gains carry a 30% tax plus 1% TDS on transfers. In the US, money transmitter licenses or a licensed partner are needed. The plan is to launch on top of licensed card-acquiring and on-ramp partners.</p></details>
+      <details><summary>What about chargebacks?</summary><p>Card payments can be disputed, but a crypto payout can't be reversed. Risk scoring, a short settlement hold for new merchants, and a reserve cover this gap.</p></details>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">TapRail is a concept prototype. No real payments are processed, and the rates and fees shown are illustrative.</div>
+  </footer>
+
+  <script>
+    const RATES = { INR_PER_USD: 88, USD: { USDC: 1, USDT: 1, BTC: 100000, ETH: 3500 } };
+    const NETWORKS = {
+      USDC: [["Base", 0.01], ["Solana", 0.005], ["Polygon", 0.01], ["Ethereum", 1.5]],
+      USDT: [["Tron", 1.0], ["Solana", 0.005], ["Ethereum", 1.5]],
+      BTC:  [["Bitcoin", 0.8], ["Lightning", 0.01]],
+      ETH:  [["Ethereum", 1.5], ["Base", 0.01]]
+    };
+    const FEE_PCT = 0.015, FX_SPREAD = 0.003, BANK_FEE_USD = 0.25;
+
+    const $ = (id) => document.getElementById(id);
+    const state = { ccy: "INR", payout: "wallet", active: false };
+
+    function seg(el, key, after) {
+      el.addEventListener("click", (e) => {
+        const b = e.target.closest("button"); if (!b) return;
+        el.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+        state[key] = b.dataset.v; after && after();
+      });
+    }
+    function fillNetworks() {
+      const coin = $("coin").value;
+      $("net").innerHTML = NETWORKS[coin].map(([n]) => `<option>${n}</option>`).join("");
+    }
+    function fmtFiat(v, ccy) {
+      return new Intl.NumberFormat(ccy === "INR" ? "en-IN" : "en-US", { style: "currency", currency: ccy, maximumFractionDigits: 2 }).format(v);
+    }
+    function fmtCoin(v, coin) {
+      const d = coin === "BTC" ? 8 : coin === "ETH" ? 6 : 2;
+      return v.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d }) + " " + coin;
+    }
+    function quote() {
+      const amt = Math.max(0, parseFloat($("amt").value) || 0);
+      const coin = $("coin").value;
+      const netName = $("net").value;
+      const netFee = (NETWORKS[coin].find(n => n[0] === netName) || [0, 0])[1];
+      const usd = state.ccy === "INR" ? amt / RATES.INR_PER_USD : amt;
+      const fee = usd * FEE_PCT;
+      const spread = state.ccy === "INR" ? usd * FX_SPREAD : 0;
+      const bank = state.payout === "bank" ? BANK_FEE_USD : 0;
+      const netUsd = Math.max(0, usd - fee - spread - netFee - bank);
+      const out = state.payout === "bank" ? netUsd : netUsd / RATES.USD[coin];
+      return { amt, usd, fee, spread, netFee, bank, netUsd, out, coin, netName };
+    }
+    function render() {
+      const q = quote();
+      $("bigAmt").textContent = fmtFiat(q.amt, state.ccy);
+      const rows = [
+        ["Customer pays", fmtFiat(q.amt, state.ccy)],
+        state.ccy === "INR" ? ["In USD (demo rate)", fmtFiat(q.usd, "USD")] : null,
+        [`Processing fee (${(FEE_PCT*100).toFixed(1)}%)`, "−" + fmtFiat(q.fee, "USD")],
+        state.ccy === "INR" ? ["FX spread (0.3%)", "−" + fmtFiat(q.spread, "USD")] : null,
+        [`Network fee (${q.netName})`, "−" + fmtFiat(q.netFee, "USD")],
+        state.payout === "bank" ? ["Bank payout", "−" + fmtFiat(q.bank, "USD")] : null,
+      ].filter(Boolean);
+      const total = state.payout === "bank"
+        ? ["You receive in your bank", fmtFiat(q.netUsd, "USD")]
+        : ["You receive", fmtCoin(q.out, q.coin)];
+      $("quote").innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join("")
+        + `<tr class="total"><td>${total[0]}</td><td>${total[1]}</td></tr>`;
+    }
+    function fakeAddr() {
+      const hex = "0123456789abcdef"; let s = "0x";
+      for (let i = 0; i < 40; i++) s += hex[Math.floor(Math.random() * 16)];
+      return s;
+    }
+    function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "shop"; }
+
+    $("activate").addEventListener("click", () => {
+      const btn = $("activate"); btn.disabled = true; btn.textContent = "Setting up…";
+      const lis = [...$("steps").children];
+      lis.forEach(li => li.classList.remove("done"));
+      document.querySelectorAll(".status .extra").forEach(n => n.remove());
+      lis.forEach((li, i) => setTimeout(() => {
+        li.classList.add("done");
+        if (i === lis.length - 1) {
+          state.active = true;
+          const name = $("biz").value.trim() || "Your shop";
+          const div = document.createElement("div");
+          div.className = "extra";
+          div.innerHTML = `<p style="margin:10px 0 4px"><span class="ok">Live.</span> You can take payments now.</p>
+            <div class="mono">Wallet: ${fakeAddr()}</div>
+            <div class="mono">Link: pay.taprail.example/${slug(name)}</div>`;
+          $("setupStatus").appendChild(div);
+          btn.disabled = false; btn.textContent = "✓ Active · re-run setup";
+          $("payee").textContent = "Paying " + name;
+          $("tap").disabled = false; $("tap").classList.remove("paid");
+          $("tapMsg").textContent = "Tap the card to pay";
+        }
+      }, 350 * (i + 1)));
+    });
+
+    $("tap").addEventListener("click", () => {
+      if (!state.active) return;
+      const t = $("tap"); const q = quote();
+      if (q.amt <= 0) { $("tapMsg").textContent = "Enter an amount first"; return; }
+      t.classList.remove("paid"); t.classList.add("busy"); t.disabled = true;
+      $("tapMsg").textContent = "Authorizing card…";
+      setTimeout(() => { $("tapMsg").textContent = `Converting to ${state.payout === "bank" ? "USD" : q.coin} on ${q.netName}…`; }, 800);
+      setTimeout(() => {
+        t.classList.remove("busy"); t.classList.add("paid"); t.textContent = "✓"; t.disabled = false;
+        const got = state.payout === "bank" ? fmtFiat(q.netUsd, "USD") + " sent to your bank" : fmtCoin(q.out, q.coin) + " sent to your wallet";
+        $("tapMsg").innerHTML = `<span style="color:var(--good);font-weight:700">Paid.</span> ${got} in 2.1s`;
+        setTimeout(() => { t.textContent = "💳"; }, 2200);
+      }, 2100);
+    });
+
+    $("coin").addEventListener("change", () => { fillNetworks(); render(); });
+    $("net").addEventListener("change", render);
+    $("amt").addEventListener("input", render);
+    seg($("ccy"), "ccy", () => { $("amt").value = state.ccy === "INR" ? 4999 : 59; render(); });
+    seg($("payout"), "payout", render);
+    fillNetworks(); render();
+  </script>
+</body>
+</html>
